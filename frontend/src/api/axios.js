@@ -3,7 +3,7 @@ import axios from 'axios';
 // In production (Vercel), VITE_API_URL = your Railway backend URL
 // e.g. https://medichain-backend.up.railway.app/api
 // In local dev, leave VITE_API_URL empty → Vite proxy handles /api
-const baseURL = 'https://medichain-backend-d1ctt1ep2-hostpial.vercel.app/api';
+const baseURL = 'https://medichain-backend-theta.vercel.app/api';
 
 const api = axios.create({ baseURL });
 
