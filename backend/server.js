@@ -7,7 +7,33 @@ const { initBlockchain } = require('./blockchain');
 
 const app = express();
 
-app.use(cors({ origin: ['http://localhost:5173',"https://medichain-ashy.vercel.app", 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176'], credentials: true }));
+// ── CORS — allow localhost dev + all Vercel deployments (preview & prod) ──────
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:5176',
+  'https://medichain-ashy.vercel.app',          // production frontend
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow any vercel.app subdomain (preview deployments)
+    if (origin.endsWith('.vercel.app') || ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Handle preflight OPTIONS for all routes
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
