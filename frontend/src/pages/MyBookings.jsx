@@ -306,7 +306,7 @@ export default function MyBookings() {
       </div>
 
       {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
         {[
           { key: 'all',       label: `All (${counts.all})` },
           { key: 'confirmed', label: `Upcoming (${counts.confirmed})` },
@@ -379,7 +379,7 @@ export default function MyBookings() {
                   TAP TO VIEW ›
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+                <div className="stack-sm" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
                   {/* Left — details */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
@@ -435,7 +435,7 @@ export default function MyBookings() {
 
       {/* Stats bar */}
       {bookings.length > 0 && (
-        <div className="glass" style={{ marginTop: 28, padding: '16px 24px', display: 'flex', gap: 24, flexWrap: 'wrap', justifyContent: 'space-around' }}>
+        <div className="glass g2" style={{ marginTop: 28, padding: '16px 24px', textAlign: 'center' }}>
           {[
             { label: 'Total Spent',    value: `₹${bookings.filter(b => b.payment_status === 'paid').reduce((s, b) => s + b.amount, 0).toLocaleString()}`, icon: '💳' },
             { label: 'COD / At Visit', value: `₹${bookings.filter(b => b.payment_status === 'cod').reduce((s, b) => s + b.amount, 0).toLocaleString()}`, icon: '💵' },

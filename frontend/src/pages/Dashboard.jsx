@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import api from '../api/axios';
 import RecordCard from '../components/RecordCard';
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: 'easeOut' }
+};
+
+const staggerContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1 } }
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -28,7 +40,11 @@ export default function Dashboard() {
   return (
     <div className="page">
       {/* Header */}
-      <div className="ph" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+      <motion.div
+        {...fadeInUp}
+        className="ph stack-sm"
+        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}
+      >
         <div>
           <h1>
             {user.role === 'doctor' ? '👨‍⚕️' : '🩺'} {user.role === 'doctor' ? "Doctor's" : 'My'} Dashboard
@@ -40,16 +56,27 @@ export default function Dashboard() {
         {user.role === 'doctor' && (
           <Link to="/add-record" className="btn btn-primary">+ Add Medical Record</Link>
         )}
-      </div>
+      </motion.div>
 
       {/* Stats Row */}
-      <div className="g3" style={{ marginBottom: '32px' }}>
+      <motion.div
+        className="g3"
+        variants={staggerContainer}
+        initial="initial"
+        animate="animate"
+        style={{ marginBottom: '32px' }}
+      >
         {[
           { icon: '📋', label: 'Total Records', value: records.length, color: '#00d4ff' },
           { icon: '⛓️', label: 'Blockchain Verified', value: records.filter(r => r.block_index).length, color: '#10b981' },
           { icon: '📅', label: 'This Month', value: records.filter(r => new Date(r.created_at) > new Date(Date.now() - 30 * 86400000)).length, color: '#8b5cf6' },
         ].map(s => (
-          <div key={s.label} className="glass" style={{ padding: '22px 26px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <motion.div
+            key={s.label}
+            variants={fadeInUp}
+            className="glass"
+            style={{ padding: '22px 26px', display: 'flex', alignItems: 'center', gap: '16px' }}
+          >
             <div style={{
               width: '50px', height: '50px', borderRadius: '14px', flexShrink: 0,
               background: `${s.color}15`, border: `1px solid ${s.color}30`,
@@ -59,20 +86,20 @@ export default function Dashboard() {
               <div style={{ fontSize: '28px', fontWeight: 800, color: s.color }}>{s.value}</div>
               <div style={{ fontSize: '13px', color: '#94a3b8' }}>{s.label}</div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Search & Filter */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
         <input
           className="input"
-          style={{ flex: 1, minWidth: '220px' }}
+          style={{ flex: 1, minWidth: 'min(100%, 220px)' }}
           placeholder="🔍 Search records..."
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <select className="select" style={{ width: '180px' }} value={filter} onChange={e => setFilter(e.target.value)}>
+        <select className="select stack-sm" style={{ width: 'min(100%, 180px)' }} value={filter} onChange={e => setFilter(e.target.value)}>
           <option value="all">All Types</option>
           {types.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
@@ -104,11 +131,18 @@ export default function Dashboard() {
           )}
         </div>
       ) : (
-        <div className="g2">
+        <motion.div
+          className="g2"
+          variants={staggerContainer}
+          initial="initial"
+          animate="animate"
+        >
           {filtered.map(r => (
-            <RecordCard key={r.id} record={r} showPatient={user.role === 'doctor'} />
+            <motion.div key={r.id} variants={fadeInUp}>
+              <RecordCard record={r} showPatient={user.role === 'doctor'} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Quick links */}

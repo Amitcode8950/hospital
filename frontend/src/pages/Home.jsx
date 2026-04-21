@@ -1,4 +1,18 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.6, ease: 'easeOut' }
+};
+
+const staggerContainer = {
+  initial: {},
+  whileInView: { transition: { staggerChildren: 0.1 } },
+  viewport: { once: true }
+};
 
 const PROBLEMS = [
   {
@@ -70,39 +84,68 @@ export default function Home() {
       <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '100px 24px 60px', position: 'relative', overflow: 'hidden' }}>
         {/* Animated blobs */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
-          <div style={{ position: 'absolute', top: '10%', left: '10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)', borderRadius: '50%', animation: 'float 8s ease-in-out infinite' }} />
-          <div style={{ position: 'absolute', bottom: '5%', right: '5%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)', borderRadius: '50%', animation: 'float 10s ease-in-out infinite reverse' }} />
-          <div style={{ position: 'absolute', top: '50%', left: '50%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(236,72,153,0.05) 0%, transparent 70%)', borderRadius: '50%', transform: 'translate(-50%,-50%)', animation: 'float 6s ease-in-out infinite' }} />
+          <div className="float" style={{ position: 'absolute', top: '10%', left: '10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)', borderRadius: '50%' }} />
+          <div className="float" style={{ position: 'absolute', bottom: '5%', right: '5%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)', borderRadius: '50%', animationDelay: '-2s' }} />
+          <div className="slow-spin" style={{ position: 'absolute', top: '50%', left: '50%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(236,72,153,0.05) 0%, transparent 70%)', borderRadius: '50%', transform: 'translate(-50%,-50%)' }} />
         </div>
 
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '860px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.25)', borderRadius: '20px', fontSize: '13px', color: '#00d4ff', fontWeight: 600, marginBottom: '28px' }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          style={{ position: 'relative', zIndex: 1, maxWidth: '860px' }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.25)', borderRadius: '20px', fontSize: '13px', color: '#00d4ff', fontWeight: 600, marginBottom: '28px' }}
+          >
             🏆 10 Healthcare Problems. One Platform.
-          </div>
-          <h1 style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 900, lineHeight: 1.1, marginBottom: '24px' }}>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            style={{ fontSize: 'clamp(36px, 6vw, 72px)', fontWeight: 900, lineHeight: 1.1, marginBottom: '24px' }}
+          >
             Healthcare is{' '}
             <span style={{ background: 'linear-gradient(135deg,#ef4444,#f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>broken</span>
             {' '}for patients.<br />
             <span style={{ background: 'linear-gradient(135deg,#00d4ff,#8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>MediChain</span>
             {' '}fixes it.
-          </h1>
-          <p style={{ fontSize: '18px', color: '#94a3b8', lineHeight: 1.7, marginBottom: '40px', maxWidth: '660px', margin: '0 auto 40px' }}>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            style={{ fontSize: '18px', color: '#94a3b8', lineHeight: 1.7, marginBottom: '40px', maxWidth: '660px', margin: '0 auto 40px' }}
+          >
             From medicine price comparisons to blockchain medical records — 10 powerful tools designed to put patients in control of their own healthcare.
-          </p>
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="hero-btns"
+            style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}
+          >
             <Link to="/register" className="btn btn-primary" style={{ fontSize: '16px', padding: '14px 32px' }}>
               🚀 Get Started Free
             </Link>
             <Link to="/medicine-prices" className="btn btn-ghost" style={{ fontSize: '16px', padding: '14px 32px' }}>
               💊 Compare Medicine Prices
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Stats bar */}
-      <section style={{ padding: '28px 24px', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div style={{ maxWidth: '960px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', textAlign: 'center' }}>
+      <motion.section
+        {...fadeInUp}
+        style={{ padding: '28px 24px', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+      >
+        <div className="g3" style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'center' }}>
           {[
             ['10', 'Healthcare Problems Solved'],
             ['⛓️', 'Blockchain-secured Records'],
@@ -115,7 +158,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Problems & Solutions */}
       <section style={{ padding: '80px 24px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -131,9 +174,20 @@ export default function Home() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
+        <motion.div
+          className="g3"
+          variants={staggerContainer}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+        >
           {PROBLEMS.map((p, i) => (
-            <div key={i} className="glass card-hover fadeUp" style={{ padding: '28px', borderTop: `3px solid ${p.color}`, position: 'relative', overflow: 'hidden' }}>
+            <motion.div
+              key={i}
+              variants={fadeInUp}
+              className="glass card-hover glow-on-hover"
+              style={{ padding: '28px', borderTop: `3px solid ${p.color}`, position: 'relative', overflow: 'hidden' }}
+            >
               {/* Rank glow */}
               <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100px', height: '100px', background: `radial-gradient(circle, ${p.color}15, transparent)`, borderRadius: '50%', pointerEvents: 'none' }} />
 
@@ -152,14 +206,15 @@ export default function Home() {
               </p>
 
               <Link to={p.to}
+                className="btn-glow"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 18px', borderRadius: '8px', background: `${p.color}15`, border: `1px solid ${p.color}30`, color: p.color, fontSize: '13px', fontWeight: 600, textDecoration: 'none', transition: 'all 0.2s' }}
                 onMouseEnter={e => { e.currentTarget.style.background = `${p.color}25`; }}
                 onMouseLeave={e => { e.currentTarget.style.background = `${p.color}15`; }}>
                 {p.cta} →
               </Link>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* CTA */}

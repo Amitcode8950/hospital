@@ -3,8 +3,8 @@
 :root {
   --bg: #050a14;
   --bg2: #0b1629;
-  --card: rgba(255,255,255,0.04);
-  --card-h: rgba(255,255,255,0.07);
+  --card: rgba(255,255,255,0.03);
+  --card-h: rgba(255,255,255,0.06);
   --accent: #00d4ff;
   --accent-dim: rgba(0,212,255,0.12);
   --accent-glow: rgba(0,212,255,0.35);
@@ -15,11 +15,12 @@
   --t1: #e2e8f0;
   --t2: #94a3b8;
   --t3: #475569;
-  --border: rgba(255,255,255,0.07);
-  --border-a: rgba(0,212,255,0.28);
-  --r: 16px;
-  --r-sm: 10px;
-  --ease: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  --border: rgba(255,255,255,0.05);
+  --border-a: rgba(0,212,255,0.25);
+  --r: 20px;
+  --r-sm: 12px;
+  --ease: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  --glass: blur(20px) saturate(180%);
 }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -64,16 +65,29 @@ body::after {
 /* ─── Glass Card ─── */
 .glass {
   background:var(--card);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
+  backdrop-filter:var(--glass);
+  -webkit-backdrop-filter:var(--glass);
   border:1px solid var(--border);
   border-radius:var(--r);
   transition:var(--ease);
+  position:relative;
+  overflow:hidden;
+}
+.glass::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%, rgba(255,255,255,0.02) 100%);
+  pointer-events:none;
 }
 .glass:hover {
   background:var(--card-h);
   border-color:var(--border-a);
-  box-shadow:0 24px 64px rgba(0,212,255,0.08);
+  box-shadow:0 32px 64px -16px rgba(0,0,0,0.4), 0 0 20px rgba(0,212,255,0.05);
+  transform:translateY(-4px);
+}
+.glow-on-hover:hover {
+  box-shadow:0 0 30px var(--accent-glow);
 }
 
 /* ─── Buttons ─── */
@@ -234,8 +248,15 @@ body::after {
 .badge-red { background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
 
 /* ─── Grid ─── */
-.g2 { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:20px; }
-.g3 { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+.g2 { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%, 340px),1fr)); gap:20px; }
+.g3 { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%, 280px),1fr)); gap:20px; }
+.g1 { display:grid; grid-template-columns: 1fr; gap:20px; }
+
+/* ─── Responsive Utils ─── */
+.hide-mobile { display: initial; }
+.show-mobile { display: none; }
+.stack-sm { display: flex; flex-direction: row; }
+.flex-split { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
 /* ─── Divider ─── */
 .divider {
@@ -268,9 +289,17 @@ body::after {
 }
 
 @keyframes float {
-  0%,100% { transform:translateY(0); }
-  50% { transform:translateY(-10px); }
+  0%,100% { transform:translateY(0) scale(1); }
+  50% { transform:translateY(-15px) scale(1.02); }
 }
+
+@keyframes slow-spin {
+  from { transform:rotate(0deg); }
+  to { transform:rotate(360deg); }
+}
+
+.float { animation:float 6s ease-in-out infinite; }
+.slow-spin { animation:slow-spin 20s linear infinite; }
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width:5px; }
@@ -282,9 +311,28 @@ a { color:var(--accent); text-decoration:none; }
 a:hover { text-decoration:underline; }
 
 /* ─── Responsive ─── */
+@media (max-width:1024px) {
+  .ph h1 { font-size:32px; }
+}
+
 @media (max-width:768px) {
   .page { padding:80px 16px 48px; }
   .auth-box { padding:32px 24px; }
   .g2,.g3 { grid-template-columns:1fr; }
   .ph h1 { font-size:26px; }
+  
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: block !important; }
+  .show-mobile-flex { display: flex !important; }
+  .stack-sm { flex-direction: column !important; }
+  .flex-split { flex-direction: column; align-items: flex-start; }
+  .hero-btns { flex-direction: column; width: 100%; }
+  .hero-btns .btn { width: 100%; }
+}
+
+@media (max-width:480px) {
+  .ph h1 { font-size:22px; }
+  .btn { padding: 10px 20px; font-size: 14px; }
+  .auth-box { border-radius: 0; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+  .auth-page { padding: 0; }
 }

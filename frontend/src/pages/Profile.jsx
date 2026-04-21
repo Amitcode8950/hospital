@@ -500,7 +500,7 @@ export default function Profile() {
   return (
     <div className="page">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <div className="glass" style={{ padding: '32px', marginBottom: 28, display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap', background: 'linear-gradient(135deg,rgba(0,212,255,0.07),rgba(139,92,246,0.05))' }}>
+      <div className="glass stack-sm" style={{ padding: '32px', marginBottom: 28, display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap', background: 'linear-gradient(135deg,rgba(0,212,255,0.07),rgba(139,92,246,0.05))' }}>
         {user.avatar ? (
           <img src={user.avatar} alt={user.name}
             style={{ width: 88, height: 88, borderRadius: '50%', border: '3px solid rgba(0,212,255,0.4)', objectFit: 'cover', flexShrink: 0 }} />
@@ -542,7 +542,7 @@ export default function Profile() {
       </div>
 
       {/* ── Tab bar ─────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 0, overflowX: 'auto', whiteSpace: 'nowrap', scrollbarWidth: 'none' }}>
         {[
           ...(user.role === 'doctor' ? [{ key: 'incoming', label: `🔔 Patient Requests (${incoming.length})`, badge: pendingRequests }] : []),
           { key: 'bookings', label: `📅 My Bookings (${bookings.length})` },
@@ -711,7 +711,7 @@ export default function Profile() {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                    <div className="stack-sm" style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                       <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: 18, fontWeight: 800, color: '#10b981' }}>₹{b.amount}</div>
                         <div style={{ fontSize: 11, color: pc.color }}>{pc.label}</div>
