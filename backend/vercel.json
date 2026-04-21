@@ -22,14 +22,15 @@
     {
       "src": "/api/(.*)",
       "methods": ["OPTIONS"],
-      "dest": "server.js",
       "headers": {
         "Access-Control-Allow-Origin":      "https://medichain-ashy.vercel.app",
         "Access-Control-Allow-Methods":     "GET,OPTIONS,POST,PUT,PATCH,DELETE",
         "Access-Control-Allow-Headers":     "Content-Type, Authorization, X-Requested-With",
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Max-Age":           "86400"
-      }
+      },
+      "status": 200,
+      "continue": false
     },
     {
       "src": "/(.*)",
