@@ -7,20 +7,18 @@ const { initBlockchain } = require('./blockchain');
 
 const app = express();
 
-// ── CORS — allow localhost dev + all Vercel deployments (preview & prod) ──────
+// ── CORS ── allow localhost + all *.vercel.app origins ────────────────────────
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
   'http://localhost:5176',
-  'https://medichain-ashy.vercel.app',          // production frontend
+  'https://medichain-ashy.vercel.app',
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (curl, Postman, server-to-server)
     if (!origin) return callback(null, true);
-    // Allow any vercel.app subdomain (preview deployments)
     if (origin.endsWith('.vercel.app') || ALLOWED_ORIGINS.includes(origin)) {
       return callback(null, true);
     }
@@ -28,11 +26,21 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200, // some browsers (IE11) choke on 204
+};
 
-// Handle preflight OPTIONS for all routes
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// ── Immediately return 200 for ALL preflight OPTIONS requests ─────────────────
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin',  req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  return res.sendStatus(200);
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

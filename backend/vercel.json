@@ -6,7 +6,31 @@
       "use": "@vercel/node"
     }
   ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin",      "value": "https://medichain-ashy.vercel.app" },
+        { "key": "Access-Control-Allow-Methods",     "value": "GET,OPTIONS,POST,PUT,PATCH,DELETE" },
+        { "key": "Access-Control-Allow-Headers",     "value": "Content-Type, Authorization, X-Requested-With" },
+        { "key": "Access-Control-Max-Age",           "value": "86400" }
+      ]
+    }
+  ],
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "methods": ["OPTIONS"],
+      "dest": "server.js",
+      "headers": {
+        "Access-Control-Allow-Origin":      "https://medichain-ashy.vercel.app",
+        "Access-Control-Allow-Methods":     "GET,OPTIONS,POST,PUT,PATCH,DELETE",
+        "Access-Control-Allow-Headers":     "Content-Type, Authorization, X-Requested-With",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age":           "86400"
+      }
+    },
     {
       "src": "/(.*)",
       "dest": "server.js"
