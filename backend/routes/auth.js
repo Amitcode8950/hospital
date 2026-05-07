@@ -34,17 +34,18 @@ router.post('/register', async (req, res) => {
       name, email, phone,
       password: hashedPassword,
       role: userRole,
-      email_otp: otp,
-      email_otp_expiry: expiry,
+      email_verified: true, // Auto-verify for dev
+      phone_verified: true, // Auto-verify for dev
     });
 
-    await sendOTPEmail(user.email, user.name, otp);
+    // Optional: still send welcome email but don't require OTP
+    try { await sendWelcomeEmail(user.email, user.name); } catch (e) {}
 
     res.status(201).json({
-      message: 'Registration successful! Check your email for the OTP.',
+      message: 'Registration successful!',
       userId: user.id,
       email: user.email,
-      step: 'verify_email',
+      step: 'complete',
     });
   } catch (err) {
     console.error('Register error:', err);
@@ -147,6 +148,8 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
+    // Email verification check removed for development
+    /*
     if (!user.email_verified) {
       return res.status(403).json({
         message: 'Please verify your email first',
@@ -154,6 +157,7 @@ router.post('/login', async (req, res) => {
         step: 'verify_email',
       });
     }
+    */
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ message: 'Invalid email or password' });

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Production backend URL — update VITE_API_URL in Vercel dashboard to change
-const baseURL = import.meta.env.VITE_API_URL || 'https://medichain-backend-theta.vercel.app/api';
+// Use /api to work with Vite proxy locally, or VITE_API_URL if set
+const baseURL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({ baseURL });
 

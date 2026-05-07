@@ -21,7 +21,7 @@ export default function Register() {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/register', form);
-      navigate('/verify-email', { state: { userId: data.userId, email: data.email, name: form.name } });
+      navigate('/login', { state: { message: 'Registration successful! You can now log in.' } });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
@@ -38,7 +38,7 @@ export default function Register() {
         </div>
 
         <h1 className="auth-title">Create your account</h1>
-        <p className="auth-sub">Join MediChain — verify your email to access your secure medical records.</p>
+        <p className="auth-sub">Join MediChain — secure access to your medical records.</p>
 
         {error && <div className="alert alert-err">⚠️ {error}</div>}
 
@@ -79,7 +79,7 @@ export default function Register() {
           </div>
 
           <button id="reg-submit" type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading}>
-            {loading ? <><span className="spin" /> Creating account...</> : 'Create Account & Verify →'}
+            {loading ? <><span className="spin" /> Creating account...</> : 'Create Account →'}
           </button>
         </form>
 
@@ -94,8 +94,7 @@ export default function Register() {
           </p>
           {[
           { step: '1', label: 'Fill form above', done: true },
-            { step: '2', label: 'Verify email (OTP sent to your inbox)' },
-            { step: '3', label: 'Access your dashboard 🎉' },
+            { step: '2', label: 'Access your dashboard 🎉' },
           ].map(s => (
             <div key={s.step} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               <div style={{
