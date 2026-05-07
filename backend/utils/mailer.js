@@ -5,46 +5,71 @@ let transporter = null;
 async function getTransporter() {
   if (transporter) return transporter;
 
-  const { EMAIL_USER, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, EMAIL_PASS } = process.env;
+  const { EMAIL_USER, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, EMAIL_PASS, NODE_ENV } = process.env;
 
-  // ── Option 1: Gmail OAuth2 (CLIENT_ID + CLIENT_SECRET + REFRESH_TOKEN) ──
+  // ── Option 1: Gmail OAuth2 ─────────────────────────────────────
   if (EMAIL_USER && CLIENT_ID && CLIENT_SECRET && REFRESH_TOKEN) {
-    transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type:         'OAuth2',
-        user:         EMAIL_USER,
-        clientId:     CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
-        refreshToken: REFRESH_TOKEN,
-      },
-    });
-    console.log(`📧 Gmail OAuth2 transporter ready (${EMAIL_USER})`);
-    return transporter;
+    try {
+      const oauthTransporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          type:         'OAuth2',
+          user:         EMAIL_USER,
+          clientId:     CLIENT_ID,
+          clientSecret: CLIENT_SECRET,
+          refreshToken: REFRESH_TOKEN,
+        },
+      });
+      // Verify connection
+      await oauthTransporter.verify();
+      transporter = oauthTransporter;
+      console.log(`📧 Gmail OAuth2 transporter ready (${EMAIL_USER})`);
+      return transporter;
+    } catch (err) {
+      console.warn('⚠️  Gmail OAuth2 verification failed, falling back...');
+    }
   }
 
   // ── Option 2: Gmail App Password ──────────────────────────────
   if (EMAIL_USER && EMAIL_PASS) {
-    transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: EMAIL_USER, pass: EMAIL_PASS },
-    });
-    console.log(`📧 Gmail App Password transporter ready (${EMAIL_USER})`);
-    return transporter;
+    try {
+      const passTransporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+      });
+      await passTransporter.verify();
+      transporter = passTransporter;
+      console.log(`📧 Gmail App Password transporter ready (${EMAIL_USER})`);
+      return transporter;
+    } catch (err) {
+      console.warn('⚠️  Gmail App Password verification failed, falling back...');
+    }
   }
 
   // ── Option 3: Dev fallback — Ethereal fake inbox ───────────────
-  const testAcc = await nodemailer.createTestAccount();
-  transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email', port: 587, secure: false,
-    auth: { user: testAcc.user, pass: testAcc.pass },
-  });
-  console.log('📧 DEV MODE — Ethereal test account:');
-  console.log(`   User: ${testAcc.user} | Pass: ${testAcc.pass}`);
-  return transporter;
+  try {
+    const testAcc = await nodemailer.createTestAccount();
+    transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email', port: 587, secure: false,
+      auth: { user: testAcc.user, pass: testAcc.pass },
+    });
+    console.log('📧 DEV MODE — Ethereal test account ready');
+    return transporter;
+  } catch (err) {
+    console.error('❌ Failed to create any mail transporter:', err.message);
+    // Return a dummy transporter that just logs to console
+    return {
+      sendMail: async (opts) => {
+        console.log('📝 Mailer Dummy: No transporter available. Email content:');
+        console.log(opts.subject);
+        return { messageId: 'dummy' };
+      }
+    };
+  }
 }
 
 async function sendOTPEmail(toEmail, toName, otp) {
+  console.log(`\n🔑 [AUTH] Email OTP for ${toEmail}: ${otp}`);
   const t = await getTransporter();
   const info = await t.sendMail({
     from: `"MediChain 🏥" <${process.env.EMAIL_USER || 'noreply@medichain.health'}>`,
@@ -93,7 +118,7 @@ async function sendOTPEmail(toEmail, toName, otp) {
   });
 
   const preview = nodemailer.getTestMessageUrl(info);
-  if (preview) console.log(`\n📧 EMAIL PREVIEW → ${preview}\n`);
+  if (preview) console.log(`📧 EMAIL PREVIEW → ${preview}`);
   return info;
 }
 
@@ -135,6 +160,7 @@ async function sendWelcomeEmail(toEmail, toName) {
 }
 
 async function sendPhoneOTPEmail(toEmail, toName, phone, otp) {
+  console.log(`\n🔑 [AUTH] Phone OTP for ${phone}: ${otp}`);
   const t = await getTransporter();
   const maskedPhone = phone.replace(/(\d{2})\d+(\d{2})$/, '$1******$2');
   const info = await t.sendMail({
@@ -182,8 +208,9 @@ async function sendPhoneOTPEmail(toEmail, toName, phone, otp) {
 </body>
 </html>`,
   });
+
   const preview = nodemailer.getTestMessageUrl(info);
-  if (preview) console.log(`\n📧 PHONE OTP EMAIL PREVIEW → ${preview}\n`);
+  if (preview) console.log(`📧 PHONE OTP EMAIL PREVIEW → ${preview}`);
   return info;
 }
 

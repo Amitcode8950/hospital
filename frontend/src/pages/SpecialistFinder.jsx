@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import BookingModal from '../components/BookingModal';
+import MapModal from '../components/MapModal';
 
 const SPECIALTIES = ['Cardiology','Neurology','Gynaecology','Orthopaedics','Dermatology','Gastroenterology','Ophthalmology','Nephrology','Oncology','Endocrinology','Pulmonology'];
 const CITIES = ['Mumbai','Delhi','Bangalore','Chennai','Hyderabad','Jaipur','Indore','Lucknow'];
@@ -14,6 +15,7 @@ export default function SpecialistFinder() {
   const [loading, setLoading]     = useState(false);
   const [searched, setSearched]   = useState(false);
   const [booking, setBooking]     = useState(null);
+  const [mapTarget, setMapTarget] = useState(null);
 
   async function search(e) {
     e?.preventDefault();
@@ -131,6 +133,10 @@ export default function SpecialistFinder() {
                       })}>
                       📅 Book Now
                     </button>
+                    <button className="btn btn-ghost btn-sm"
+                      onClick={() => setMapTarget(`${s.hospital}, ${s.city}`)}>
+                      📍 Map
+                    </button>
                   </div>
                 </div>
               </div>
@@ -143,6 +149,10 @@ export default function SpecialistFinder() {
         <BookingModal item={booking} type="doctor"
           onClose={() => setBooking(null)}
           onSuccess={() => setBooking(null)} />
+      )}
+
+      {mapTarget && (
+        <MapModal target={mapTarget} onClose={() => setMapTarget(null)} />
       )}
     </div>
   );

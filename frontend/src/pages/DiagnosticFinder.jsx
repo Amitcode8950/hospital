@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import api from '../api/axios';
 import BookingModal from '../components/BookingModal';
+import MapModal from '../components/MapModal';
 
 const CITIES = ['Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad', 'Jaipur', 'Lucknow'];
 
@@ -13,6 +14,7 @@ export default function DiagnosticFinder() {
   const [loading, setLoading]   = useState(false);
   const [searched, setSearched] = useState(false);
   const [booking, setBooking]   = useState(null);
+  const [mapTarget, setMapTarget] = useState(null);
 
   async function search(e) {
     e?.preventDefault(); setLoading(true); setSearched(true);
@@ -157,6 +159,10 @@ export default function DiagnosticFinder() {
                     🏠 Book Home Collection
                   </button>
                 )}
+                <button className="btn btn-ghost btn-sm"
+                  onClick={() => setMapTarget(`${lab.name}, ${lab.city}`)}>
+                  📍 View on Map
+                </button>
               </div>
             </div>
           ))}
@@ -167,6 +173,10 @@ export default function DiagnosticFinder() {
         <BookingModal item={booking} type="lab"
           onClose={() => setBooking(null)}
           onSuccess={() => setBooking(null)} />
+      )}
+
+      {mapTarget && (
+        <MapModal target={mapTarget} onClose={() => setMapTarget(null)} />
       )}
     </div>
   );

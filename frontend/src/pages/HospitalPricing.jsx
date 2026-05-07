@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import api from '../api/axios';
+import MapModal from '../components/MapModal';
 
 const CITIES = ['Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Hyderabad', 'Jaipur', 'Lucknow', 'Chandigarh'];
 
@@ -9,6 +10,7 @@ export default function HospitalPricing() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [mapTarget, setMapTarget] = useState(null);
 
   async function search(e) {
     e?.preventDefault();
@@ -97,6 +99,10 @@ export default function HospitalPricing() {
                         {h.insurance && <span style={{ color: '#10b981' }}>✓ Insurance</span>}
                         {h.accredited && <span style={{ color: '#8b5cf6' }}>✓ Accredited</span>}
                       </div>
+                      <button className="btn btn-ghost btn-sm" style={{ marginTop: '8px', padding: '2px 8px', fontSize: '11px' }}
+                        onClick={() => setMapTarget(`${h.name}, ${h.city}`)}>
+                        📍 View on Map
+                      </button>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: '20px', fontWeight: 800, color: i === 0 ? '#10b981' : '#e2e8f0' }}>₹{h.price.toLocaleString()}</div>
@@ -112,6 +118,10 @@ export default function HospitalPricing() {
             </div>
           );
         })
+      )}
+
+      {mapTarget && (
+        <MapModal target={mapTarget} onClose={() => setMapTarget(null)} />
       )}
     </div>
   );

@@ -12,7 +12,7 @@ const medicines = [
   {
     name: 'Dolo 650', generic_name: 'Paracetamol', manufacturer: 'Micro Labs',
     category: 'Analgesic / Antipyretic', composition: 'Paracetamol 650mg',
-    dosage_form: 'Tablet', uses: ['Fever', 'Headache', 'Body pain', 'Toothache'],
+    dosage_form: 'Tablet', uses: ['Fever', 'Headache', 'Body pain', 'Toothache'], 
     side_effects: ['Nausea', 'Liver damage (overdose)', 'Allergic reactions'],
     prices: [
       { pharmacy: 'Apollo Pharmacy',  logo: '🔵', price: 31, mrp: 36, discount: 14, in_stock: true,  delivery_days: 2 },
