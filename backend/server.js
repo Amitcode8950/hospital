@@ -134,4 +134,11 @@ async function start() {
   }
 }
 
-start();
+if (!process.env.VERCEL) {
+  start();
+} else {
+  // Vercel environment: Connect to DB and Blockchain on cold start, then export the app.
+  connectDB().catch(err => console.error('MongoDB Connection Error:', err));
+  initBlockchain().catch(err => console.error('Blockchain Init Error:', err));
+  module.exports = app;
+}
