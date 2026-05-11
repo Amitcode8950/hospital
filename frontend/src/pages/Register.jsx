@@ -4,7 +4,7 @@ import api from '../api/axios';
 
 export default function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', phone: '+910000000000', password: '', role: 'patient' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'patient' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
@@ -55,8 +55,11 @@ export default function Register() {
               value={form.email} onChange={e => set('email', e.target.value)} required />
           </div>
 
-
-
+          <div className="fg">
+            <label className="label">Phone Number</label>
+            <input id="reg-phone" className="input" type="text" placeholder="+919876543210"
+              value={form.phone} onChange={e => set('phone', e.target.value)} required />
+          </div>
           <div className="fg">
             <label className="label">Password</label>
             <div style={{ position: 'relative' }}>

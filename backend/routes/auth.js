@@ -148,6 +148,9 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(401).json({ message: 'Invalid email or password' });
+
     // Email verification check removed for development
     /*
     if (!user.email_verified) {
@@ -158,9 +161,6 @@ router.post('/login', async (req, res) => {
       });
     }
     */
-
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ message: 'Invalid email or password' });
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, name: user.name },
