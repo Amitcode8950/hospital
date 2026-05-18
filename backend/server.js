@@ -14,6 +14,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:5175',
   'http://localhost:5176',
   'https://medichain-ashy.vercel.app',
+  'https://hospital-beta-swart.vercel.app',
 ];
 
 const corsOptions = {
