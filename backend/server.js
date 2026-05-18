@@ -41,6 +41,9 @@ app.options('*', (req, res) => {
   res.header('Access-Control-Max-Age', '86400');
   return res.sendStatus(200);
 });
+app.get('/',(req,res)=>{
+  res.send("Hello World");
+})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
