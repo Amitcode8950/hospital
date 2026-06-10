@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://medichain.onrender.com',
+        target: 'https://hospital-beta-swart.vercel.app/',
         changeOrigin: true,
       },  
     },
