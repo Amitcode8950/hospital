@@ -145,22 +145,22 @@ router.post('/resend-phone-otp', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Guard: JWT_SECRET must be set (missing on Vercel → 500)
+    if (!process.env.JWT_SECRET) {
+      console.error('❌ JWT_SECRET is not set in environment variables!');
+      return res.status(500).json({ message: 'Server configuration error: JWT_SECRET missing' });
+    }
+
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ message: 'Invalid email or password' });
-
-    // Email verification check removed for development
-    /*
-    if (!user.email_verified) {
-      return res.status(403).json({
-        message: 'Please verify your email first',
-        userId: user.id,
-        step: 'verify_email',
-      });
-    }
-    */
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, name: user.name },
@@ -168,7 +168,12 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    await AuditLog.create({ user_id: user._id, action: 'LOGIN', details: 'User logged in' });
+    // AuditLog is non-fatal — don't let it crash the login response
+    try {
+      await AuditLog.create({ user_id: user._id, action: 'LOGIN', details: 'User logged in' });
+    } catch (auditErr) {
+      console.warn('⚠️  AuditLog write failed (non-fatal):', auditErr.message);
+    }
 
     res.json({
       token,

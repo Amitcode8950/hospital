@@ -2,6 +2,17 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config({ override: true });
 
+// ── Validate critical env vars at startup ─────────────────────────────────────
+const REQUIRED_ENV = ['JWT_SECRET'];
+const missingEnv = REQUIRED_ENV.filter((k) => !process.env[k]);
+if (missingEnv.length > 0) {
+  console.error('❌ Missing required environment variables:', missingEnv.join(', '));
+  console.error('   On Vercel: go to Project → Settings → Environment Variables and add them.');
+}
+if (!process.env.MONGODB_URI?.trim()) {
+  console.warn('⚠️  MONGODB_URI not set — using in-memory DB (data resets on every cold start on Vercel!)');
+}
+
 const { connectDB } = require('./db');
 const { initBlockchain } = require('./blockchain');
 
