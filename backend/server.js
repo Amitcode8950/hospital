@@ -20,12 +20,9 @@ const app = express();
 
 // ── CORS ── allow localhost + all *.vercel.app origins ────────────────────────
 const ALLOWED_ORIGINS = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:5175',
-  'http://localhost:5176',
-  'https://medichain-ashy.vercel.app',
-  'https://hospital-beta-swart.vercel.app',
+  "https://hospital-beta-swart.vercel.app/",
+  "http://localhost:5174",
+  ,
 ];
 
 const corsOptions = {
